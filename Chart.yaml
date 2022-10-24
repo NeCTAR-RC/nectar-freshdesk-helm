@@ -1,0 +1,12 @@
+apiVersion: v2
+name: nectar-freshdesk
+description: A Helm chart for Nectar Freshdesk
+type: application
+version: 0.0.1
+appVersion: 1.0.0-41-g6ff5d45
+dependencies:
+- name: common
+  repository: https://charts.bitnami.com/bitnami
+  tags:
+  - bitnami-common
+  version: 1.x.x

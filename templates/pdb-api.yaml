@@ -1,0 +1,14 @@
+{{- if .Values.api.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "nectar-freshdesk.fullname" . }}-api
+  labels:
+    {{- include "nectar-freshdesk.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.api.pdb.minAvailable | default 0 }}
+  selector:
+    matchLabels:
+      {{- include "nectar-freshdesk.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: api
+{{- end }}
