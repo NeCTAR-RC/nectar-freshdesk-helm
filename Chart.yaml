@@ -2,9 +2,9 @@ apiVersion: v2
 name: nectar-freshdesk
 description: A Helm chart for Nectar Freshdesk
 type: application
-version: 0.3.0
+version: 0.3.1
 appVersion: 7b20b75
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 2.22.0
+  version: 2.23.0
