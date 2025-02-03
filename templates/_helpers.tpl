@@ -66,28 +66,15 @@ Vault annotations
 */}}
 {{- define "nectar-freshdesk.vaultAnnotations" -}}
 vault.hashicorp.com/role: "{{ .Values.vault.role }}"
+vault.hashicorp.com/agent-init-first: "true"
 vault.hashicorp.com/agent-inject: "true"
 vault.hashicorp.com/agent-pre-populate-only: "true"
 vault.hashicorp.com/agent-inject-status: "update"
-vault.hashicorp.com/secret-volume-path-secrets.conf: /etc/nectar-freshdesk/nectar-freshdesk.conf.d
-vault.hashicorp.com/agent-inject-secret-secrets.conf: "{{ .Values.vault.settings_secret }}"
-vault.hashicorp.com/agent-inject-template-secrets.conf: |
+vault.hashicorp.com/agent-inject-secret-secret_envs: "{{ .Values.vault.settings_secret }}"
+vault.hashicorp.com/agent-inject-template-secret_envs: |
   {{ print "{{- with secret \"" .Values.vault.settings_secret "\" -}}" }}
-  {{ print "[DEFAULT]" }}
-  {{ print "transport_url={{ .Data.data.transport_url }}" }}
-  {{ print "[database]" }}
-  {{ print "connection={{ .Data.data.database_connection }}" }}
-  {{ print "[nectar-freshdesk]" }}
-  {{ print "bot_password={{ .Data.data.bot_password }}" }}
-  {{ print "[flask]" }}
-  {{ print "secret_key={{ .Data.data.secret_key }}" }}
-  {{ print "[service_auth]" }}
-  {{ print "password={{ .Data.data.keystone_password }}" }}
-  {{ print "[keystone_authtoken]" }}
-  {{ print "password={{ .Data.data.keystone_password }}" }}
-  {{ print "[oslo_limit]" }}
-  {{ print "password={{ .Data.data.keystone_password }}" }}
-  {{ print "[freshdesk]" }}
-  {{ print "key={{ .Data.data.freshdesk_key }}" }}
+  {{ print "{{- range $key, $val := .Data.data }}" }}
+  {{ print "export {{ $key }}=\"{{ $val }}\"" }}
+  {{ print "{{- end }}" }}
   {{ print "{{- end -}}" }}
 {{- end }}
