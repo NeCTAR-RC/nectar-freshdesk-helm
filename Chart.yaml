@@ -2,7 +2,7 @@ apiVersion: v2
 name: nectar-freshdesk
 description: A Helm chart for Nectar Freshdesk
 type: application
-version: 1.0.1
+version: 1.0.2
 appVersion: 1.0.0-5-g1c3eeee
 dependencies:
 - name: common

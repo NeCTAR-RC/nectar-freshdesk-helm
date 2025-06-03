@@ -16,4 +16,4 @@ spec:
   - {}
   ingress:
     - ports:
-        - port: {{ .Values.service.port }}
+        - port: 8613
