@@ -76,6 +76,14 @@ service:
   type: ClusterIP
   port: 80
 
+gateway:
+  enabled: false
+  annotations: {}
+  hostnames:
+    - chart-example.local
+  parentRefs:
+    - name: default
+
 ingress:
   enabled: false
   className: ""
