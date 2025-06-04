@@ -16,4 +16,4 @@ spec:
   - {}
   ingress:
     - ports:
-        - port: 8613
+        - port: 8080
