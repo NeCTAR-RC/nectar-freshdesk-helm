@@ -38,6 +38,24 @@ agent:
     values: []
   affinity: {}
 
+# The AI triage worker. Also needs OS_TRIAGE__ENABLED and the other
+# OS_TRIAGE__* settings in conf, and OS_TRIAGE__CLIENT_SECRET in the Vault
+# settings secret.
+triage:
+  enabled: false
+  replicaCount: 1
+  pdb:
+    enabled: false
+    minAvailable: 1
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+  affinity: {}
+  resources: {}
+
 image:
   repository: registry.rc.nectar.org.au/nectar/nectar-freshdesk
   pullPolicy: IfNotPresent

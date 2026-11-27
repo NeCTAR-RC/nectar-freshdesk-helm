@@ -1,0 +1,60 @@
+{{- if .Values.triage.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nectar-freshdesk.fullname" . }}-triage
+  labels:
+    {{- include "nectar-freshdesk.labels" . | nindent 4 }}
+    app.kubernetes.io/component: triage
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.triage.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "nectar-freshdesk.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: triage
+  template:
+    metadata:
+      annotations:
+        {{- include (print .Chart.Name ".vaultAnnotations") . | nindent 8 }}
+      labels:
+        {{- include "nectar-freshdesk.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: triage
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "nectar-freshdesk.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ['/docker-run-triage.sh']
+          envFrom:
+            - configMapRef:
+                name: {{ include "nectar-freshdesk.fullname" . }}
+          resources:
+            {{- toYaml .Values.triage.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.triage.affinity }}
+      affinity: {{- include "nectarlib.tplvalues.render" (dict "value" .Values.triage.affinity "context" $) | nindent 8 }}
+      {{- else }}
+      affinity:
+        podAffinity: {{- include "nectarlib.affinities.pods" (dict "type" .Values.triage.podAffinityPreset "component" "triage" "context" $) | nindent 10 }}
+        podAntiAffinity: {{- include "nectarlib.affinities.pods" (dict "type" .Values.triage.podAntiAffinityPreset "component" "triage" "context" $) | nindent 10 }}
+        nodeAffinity: {{- include "nectarlib.affinities.nodes" (dict "type" .Values.triage.nodeAffinityPreset.type "key" .Values.triage.nodeAffinityPreset.key "values" .Values.triage.nodeAffinityPreset.values) | nindent 10 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
